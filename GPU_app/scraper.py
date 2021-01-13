@@ -1,21 +1,70 @@
 import requests
 from bs4 import BeautifulSoup
 
-# URL = 'https://www.monster.com/jobs/search/?q=Software-Developer&where=Australia'
-# page = requests.get(URL)
-# soup = BeautifulSoup(page.content, 'html.parser')
+class Scraper:
 
-# results = soup.find(id='ResultsContainer')
+	def __init__(self):
+		self.product_links = []
+		self.headers = {
+			"User-Agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36'
+		}
+	def scrapeLinks(self):
 
-# job_elems = results.find_all('section', class_='card-content')
+		URL = {
+		'3070p1':'https://www.newegg.com/p/pl?d=rtx+3070&N=100007709&isdeptsrh=1',
+		'3070p2':'https://www.newegg.com/p/pl?d=rtx+3070&N=100007709&isdeptsrh=2',
+		'3080p1':'https://www.newegg.com/p/pl?d=rtx+3080&N=100007709&isdeptsrh=1',
+		'3080p2':'https://www.newegg.com/p/pl?d=rtx+3080&N=100007709&isdeptsrh=2',
+		'3090p1':'https://www.newegg.com/p/pl?d=rtx+3090&N=100007709&isdeptsrh=1',
+		'3090p2':'https://www.newegg.com/p/pl?d=rtx+3090&N=100007709&isdeptsrh=2',
+		}
 
-# print(job_elems)
+		for link in list(URL.values()):
+			try:
+				page = requests.get(link, headers=self.headers)
+				soup = BeautifulSoup(page.content, 'html.parser')
 
-URL = 'https://www.amazon.de/-/en/ASUS-Strix-GeForce-Gaming-Graphics/dp/B086FRKXJX/ref=sr_1_1?dchild=1&keywords=2060&qid=1609713669&sr=8-1'
-page = requests.get(URL)
-soup = BeautifulSoup(page.content, features="lxml")
+				for i in soup.find_all(class_="item-info"):
+					for a in i.find_all('a', href=True): 
+						if a.text:
+							self.product_links.append(a['href'])
+			except:
+				print('Failed to get ' + str(link))
+		return self.product_links
 
-results = soup.find_all(page.content, features="lxml")
-# job_elems = results.find_all('section', class_='card-content')
+	def scraperProductInfo(self,URL):
+		title = ''
+		price = ''
+		product_bullets = []
 
-print(soup)
+		try:
+			page = requests.get(URL, headers=self.headers)
+			soup = BeautifulSoup(page.content, 'html.parser')
+
+			title = soup.find(class_='product-title').get_text()
+			price = str(soup.find(class_='price-current').get_text())
+
+			for bullets in soup.find(class_='product-bullets'):
+				for l in bullets.find_all('li'):
+					product_bullets.append(l.get_text())
+
+		except:
+			print('Failed to get ' + str(URL))
+
+		return title, price, product_bullets[0], product_bullets[2]
+
+
+	def scraperUpdate(self):
+		self.product_links = Scraper().scrapeLinks()
+		for link in self.product_links:
+			try:
+				info = Scraper().scraperProductInfo(link)
+				print(info)
+			except:
+				print('Failed to get url ' + str(link))
+		return self.product_links
+
+
+# url = 'https://www.newegg.com/asus-geforce-rtx-3070-ko-rtx3070-o8g-gamin/p/N82E16814126466?Description=rtx%203070&cm_re=rtx_3070-_-14-126-466-_-Product'
+# print(Scraper().scraperProductInfo(url))
+print(Scraper().scraperUpdate())
