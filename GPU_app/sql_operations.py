@@ -17,9 +17,6 @@ class SQLOperations:
 		query = '''
 		CREATE TABLE gpu_info(
 			gpu_id SERIAL PRIMARY KEY NOT NULL,
-			url_address VARCHAR(500),
-			origin_manufacturer VARCHAR(50),
-			brand VARCHAR(50),
 			name VARCHAR(100),
 			price FLOAT(2),
 			speed VARCHAR(50),
@@ -31,15 +28,12 @@ class SQLOperations:
 	def pass_into_table(self,input_values):
 
 		cur.execute('''INSERT INTO gpu_info(
-			url_address,
-			origin_manufacturer,
-			brand,
 			name,
 			price,
 			speed,
 			memory
 			)
-			VALUES(%s,%s,%s,%s,%s,%s,%s)''', 
+			VALUES(%s,%s,%s,%s)''', 
 		input_values)
 		conn.commit()
 
@@ -48,6 +42,6 @@ class SQLOperations:
 		print(cur.fetchall())
 
 	def clear_table(self):
-		cur.execute("TRUNCATE TABLE gpu_info")
+		cur.execute("DROP TABLE gpu_info")
 		conn.commit()
 

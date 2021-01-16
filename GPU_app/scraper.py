@@ -10,7 +10,7 @@ class Scraper:
 		self.headers = {
 			"User-Agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36'
 		}
-		self.df = pd.DataFrame(columns=['Name','Price','Memory','Speed'])
+		self.df = pd.DataFrame(columns=('Name','price','Memory','Speed'))
 	def scrapeLinks(self):
 
 		URL = {
@@ -80,18 +80,21 @@ class Scraper:
 		self.product_links = Scraper().scrapeLinks()
 		amount_of_links = len(self.product_links)
 		count = 0
+		df = pd.DataFrame(columns=('Name','Price','Memory','Speed'))
 		for link in self.product_links:
 			count += 1		
 			try:
 				if Scraper().scraperProductInfo(link) != None:
-					add_to_df = [Scraper().scraperProductInfo(link)]
-					self.df.append(add_to_df, ignore_index=True)
+					print(link)
+					add_to_df = pd.DataFrame([list(Scraper().scraperProductInfo(link))], columns=('Name','Price','Memory','Speed'))
+					df = df.append(add_to_df,ignore_index=True)
+
 					# print(Scraper().scraperProductInfo(link))
 			except:
 				print('Failed to get url ' + str(link))
 			_ = system('cls')
 			print('Completed ' + str(count) + '/' + str(amount_of_links) + ' links')
-		return self.df
+		return df
 
 
 	def isSpeed(self, speed):
@@ -124,6 +127,6 @@ class Scraper:
 		except:
 			return False
 
-print(Scraper().scraperUpdate())
+# print(Scraper().scraperUpdate())
 
-
+# print(list((Scraper().scraperProductInfo('https://www.newegg.com/gigabyte-geforce-rtx-3070-gv-n3070eagle-8gd/p/N82E16814932344?Description=rtx 3070&cm_re=rtx_3070-_-14-932-344-_-Product'))))
