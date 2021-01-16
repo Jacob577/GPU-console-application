@@ -40,43 +40,48 @@ class Scraper:
 		speed = ''
 
 		try:
-			page = requests.get(URL, headers=self.headers)
-			soup = BeautifulSoup(page.content, 'html.parser')
+			if URL[-1] == 't': #This speeds up the proces significantly
+				try:
+					page = requests.get(URL, headers=self.headers)
+					soup = BeautifulSoup(page.content, 'html.parser')
 
-			title = soup.find(class_='product-title').get_text()
-			price = str(soup.find(class_='price-current').get_text())
+					title = soup.find(class_='product-title').get_text()
+					price = str(soup.find(class_='price-current').get_text())
 
-			for bullets in soup.find(class_='product-bullets'):
-				for l in bullets.find_all('li'):
-					product_bullets.append(l.get_text())
+					for bullets in soup.find(class_='product-bullets'):
+						for l in bullets.find_all('li'):
+							product_bullets.append(l.get_text())
 
-			for product in product_bullets:
-				if Scraper().isRam(product):
-					ram = product
-					break
-			for product in product_bullets:
-				if Scraper().isSpeed(product):
-					speed = product
-					break
+					for product in product_bullets:
+						if Scraper().isRam(product):
+							ram = product
+							break
 
-			if Scraper().isRam(ram) and Scraper().isSpeed(speed):
-				return title, price, ram, speed	
-			else:
-				print('Failed to get ' + str(URL))
+					for product in product_bullets:
+						if Scraper().isSpeed(product):
+							speed = product
+							break
 
+					
+					if (Scraper().cleanRam(ram) != False) and (Scraper().cleanSpeed(speed) != False):
+						# if Scraper().isRam(ram) and Scraper().isSpeed(speed):
+						return title, price[1:], Scraper().cleanRam(ram), Scraper().cleanSpeed(speed)	
+
+
+				except:
+					print('Failed to get' + str(URL))		
 		except:
-			print('Failed to get ' + str(URL))		
-
+			print('This is a duplicet.')
 
 	def scraperUpdate(self):
 		self.product_links = Scraper().scrapeLinks()
-		for link in self.product_links:
+		for link in self.product_links:		
 			try:
-				info = Scraper().scraperProductInfo(link)
-				print(info)
+				if Scraper().scraperProductInfo(link) != None:
+					print(Scraper().scraperProductInfo(link))
 			except:
 				print('Failed to get url ' + str(link))
-				# return self.product_links
+
 
 	def isSpeed(self, speed):
 		try:
@@ -97,19 +102,16 @@ class Scraper:
 			return False
 
 	def cleanRam(self, ram):
+		try:
+			return int(ram.split('GB')[0][-2:])
+		except:
+			return False
 
-		pass
+	def cleanSpeed(self, speed):
+		try:
+			return int(speed.split('MHz')[0][-5:])
+		except:
+			return False
 
+print(Scraper().scraperUpdate())
 
-
-# url = 'https://www.newegg.com/asus-geforce-rtx-3070-ko-rtx3070-o8g-gamin/p/N82E16814126466?Description=rtx%203070&cm_re=rtx_3070-_-14-126-466-_-Product'
-# print(Scraper().scraperProductInfo(url))
-Scraper().scraperUpdate()
-# ram = '15 GB here'
-# speed = 'Real Boost Clock: 1815 MHz; Memory Detail'
-
-# print(ram.split('MHz') != ram)
-
-# print(ram.split('MHz'))
-# print(ram.split('FooBooFizz'))
-# print(speed.split('gggggg'))
