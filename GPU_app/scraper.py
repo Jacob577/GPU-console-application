@@ -1,5 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
+import pandas as pd
+from os import system, name 
 
 class Scraper:
 
@@ -8,6 +10,7 @@ class Scraper:
 		self.headers = {
 			"User-Agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36'
 		}
+		self.df = pd.DataFrame(columns=['Name','Price','Memory','Speed'])
 	def scrapeLinks(self):
 
 		URL = {
@@ -75,12 +78,20 @@ class Scraper:
 
 	def scraperUpdate(self):
 		self.product_links = Scraper().scrapeLinks()
-		for link in self.product_links:		
+		amount_of_links = len(self.product_links)
+		count = 0
+		for link in self.product_links:
+			count += 1		
 			try:
 				if Scraper().scraperProductInfo(link) != None:
-					print(Scraper().scraperProductInfo(link))
+					add_to_df = [Scraper().scraperProductInfo(link)]
+					self.df.append(add_to_df, ignore_index=True)
+					# print(Scraper().scraperProductInfo(link))
 			except:
 				print('Failed to get url ' + str(link))
+			_ = system('cls')
+			print('Completed ' + str(count) + '/' + str(amount_of_links) + ' links')
+		return self.df
 
 
 	def isSpeed(self, speed):
@@ -114,4 +125,5 @@ class Scraper:
 			return False
 
 print(Scraper().scraperUpdate())
+
 
