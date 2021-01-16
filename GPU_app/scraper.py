@@ -36,6 +36,8 @@ class Scraper:
 		title = ''
 		price = ''
 		product_bullets = []
+		ram = ''
+		speed = ''
 
 		try:
 			page = requests.get(URL, headers=self.headers)
@@ -48,10 +50,22 @@ class Scraper:
 				for l in bullets.find_all('li'):
 					product_bullets.append(l.get_text())
 
-		except:
-			print('Failed to get ' + str(URL))
+			for product in product_bullets:
+				if Scraper().isRam(product):
+					ram = product
+					break
+			for product in product_bullets:
+				if Scraper().isSpeed(product):
+					speed = product
+					break
 
-		return title, price, product_bullets[0], product_bullets[2]
+			if Scraper().isRam(ram) and Scraper().isSpeed(speed):
+				return title, price, ram, speed	
+			else:
+				print('Failed to get ' + str(URL))
+
+		except:
+			print('Failed to get ' + str(URL))		
 
 
 	def scraperUpdate(self):
@@ -62,9 +76,40 @@ class Scraper:
 				print(info)
 			except:
 				print('Failed to get url ' + str(link))
-		return self.product_links
+				# return self.product_links
+
+	def isSpeed(self, speed):
+		try:
+			if speed.split('MHz') != speed.split('FooBooFizz'):
+				return True
+			else:
+				return False
+		except:
+			return False
+	
+	def isRam(self, ram):
+		try:
+			if ram.split('GB') != ram.split('FooBooFizz'):
+				return True
+			else:
+				return False
+		except:
+			return False
+
+	def cleanRam(self, ram):
+
+		pass
+
 
 
 # url = 'https://www.newegg.com/asus-geforce-rtx-3070-ko-rtx3070-o8g-gamin/p/N82E16814126466?Description=rtx%203070&cm_re=rtx_3070-_-14-126-466-_-Product'
 # print(Scraper().scraperProductInfo(url))
-print(Scraper().scraperUpdate())
+Scraper().scraperUpdate()
+# ram = '15 GB here'
+# speed = 'Real Boost Clock: 1815 MHz; Memory Detail'
+
+# print(ram.split('MHz') != ram)
+
+# print(ram.split('MHz'))
+# print(ram.split('FooBooFizz'))
+# print(speed.split('gggggg'))
