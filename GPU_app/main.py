@@ -6,7 +6,7 @@ from os import system, name
 from time import time
 
 pd.set_option('display.width', 40)
-link = 'https://www.newegg.com/gigabyte-geforce-rtx-3070-gv-n3070eagle-8gd/p/N82E16814932344?Description=rtx 3070&cm_re=rtx_3070-_-14-932-344-_-Product'
+# link = 'https://www.newegg.com/gigabyte-geforce-rtx-3070-gv-n3070eagle-8gd/p/N82E16814932344?Description=rtx 3070&cm_re=rtx_3070-_-14-932-344-_-Product'
 
 conn = pg2.connect(database='postgres', user='postgres',password='password')
 cur = conn.cursor()
@@ -101,6 +101,20 @@ while running:
 				print('What is the highest memory you would like your GPU to have?')
 				higher_bound = float(input('Higher bound: '))
 				SQLOperations().showMemoryRange(lower_bound,higher_bound)
+				print('Press enter to return to main menue.')
+				wait = input()
+			except:
+				print('Something went wrong, make sure to not include anything else than numbers or ","!')
+				wait = input('Press enter to return to main menue.')
+
+		if choice == 5:
+			try:
+				_ = system('cls')
+				print('What is the lowes speed you would like your GPU to have?')
+				lower_bound = float(input('Lower bound: '))
+				print('What is the highest speed you would like your GPU to have?')
+				higher_bound = float(input('Higher bound: '))
+				SQLOperations().showSpeedRange(lower_bound,higher_bound)
 				print('Press enter to return to main menue.')
 				wait = input()
 			except:
