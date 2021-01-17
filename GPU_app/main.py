@@ -3,8 +3,8 @@ from sql_operations import SQLOperations
 from scraper import Scraper
 import pandas as pd
 from os import system, name 
-from time import time
 
+df = pd.DataFrame(columns=('Name','Price','Memory','Speed'))
 pd.set_option('display.width', 40)
 # link = 'https://www.newegg.com/gigabyte-geforce-rtx-3070-gv-n3070eagle-8gd/p/N82E16814932344?Description=rtx 3070&cm_re=rtx_3070-_-14-932-344-_-Product'
 
@@ -12,7 +12,6 @@ conn = pg2.connect(database='postgres', user='postgres',password='password')
 cur = conn.cursor()
 # df = Scraper().scraperUpdate()
 
-df = pd.DataFrame(columns=('Name','Price','Memory','Speed'))
 # add_to_df = pd.DataFrame([list(Scraper().scraperProductInfo(link))], columns=('Name','Price','Memory','Speed'))
 # add_to_df1 = pd.DataFrame([list(Scraper().scraperProductInfo(link))], columns=('Name','Price','Memory','Speed'))
 # add_to_df2 = pd.DataFrame([list(Scraper().scraperProductInfo(link))], columns=('Name','Price','Memory','Speed'))
@@ -32,10 +31,9 @@ df = pd.DataFrame(columns=('Name','Price','Memory','Speed'))
 # SQLOperations().clear_table()
 # print(list((Scraper().scraperProductInfo('https://www.newegg.com/gigabyte-geforce-rtx-3070-gv-n3070eagle-8gd/p/N82E16814932344?Description=rtx 3070&cm_re=rtx_3070-_-14-932-344-_-Product'))))
 
-
 running = True
 
-while running:
+while running:	
 	_ = system('cls')
 	print('Welcome to a GPU-application created by Jacob')
 	print('Choose between the different alternatives bellow by entering the number in front of the alternative and press enter: \n')
@@ -45,6 +43,7 @@ while running:
 	print('3. Specify price range')
 	print('4. Specify memory range')
 	print('5. Specify speed range')
+	print('6. Search within database')
 	print('To exit application press any letter.\n')
 	print('Enter your choice:\n')
 	choice = input()
@@ -58,15 +57,20 @@ while running:
 				print('table now cleared')
 			except:
 				pass
+
 			try:
 				SQLOperations().create_table()
 				print('table now created')
 			except:
 				pass
+
 			try:
 				df = Scraper().scraperUpdate()
-				for row in range(len(df.iloc[:])):
-					SQLOperations().pass_into_table(df.iloc[row])
+				for i in range(len(df.iloc[:])):
+					try:
+						SQLOperations().pass_into_table(df.iloc[i])
+					except:
+						pass
 				wait = input('Update complete, press enter to return to the main menue')
 			except:
 				pass
@@ -74,6 +78,7 @@ while running:
 		if choice == 2:
 			_ = system('cls')
 			try:
+				print(df)
 				SQLOperations().show_table()
 				another = input('Press enter to return to the main menue')
 			except:
@@ -119,6 +124,17 @@ while running:
 				wait = input()
 			except:
 				print('Something went wrong, make sure to not include anything else than numbers or ","!')
+				wait = input('Press enter to return to main menue.')
+
+		if choice == 6:
+			try:
+				_ = system('cls')
+				name_search = input('Search within database for GPU: ')
+				SQLOperations().searchGPU(name_search) 
+				print('Press enter to return to main menue.')
+				wait = input()
+			except:
+				print('Something went wrong, feel free to try again or update database.')
 				wait = input('Press enter to return to main menue.')
 	except:
 		running = False

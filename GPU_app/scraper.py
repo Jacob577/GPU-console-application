@@ -51,6 +51,11 @@ class Scraper:
 					title = soup.find(class_='product-title').get_text()
 					price = str(soup.find(class_='price-current').get_text())
 
+					try:
+						price = price.replace(',','')
+					except:
+						pass
+
 					for bullets in soup.find(class_='product-bullets'):
 						for l in bullets.find_all('li'):
 							product_bullets.append(l.get_text())
@@ -68,7 +73,7 @@ class Scraper:
 					
 					if (Scraper().cleanRam(ram) != False) and (Scraper().cleanSpeed(speed) != False):
 						# if Scraper().isRam(ram) and Scraper().isSpeed(speed):
-						return title, price[1:], Scraper().cleanRam(ram), Scraper().cleanSpeed(speed)	
+						return title, float(price[1:]), Scraper().cleanRam(ram), int(Scraper().cleanSpeed(speed))	
 
 
 				except:

@@ -16,9 +16,9 @@ class SQLOperations:
 		CREATE TABLE gpu_info(
 			gpu_id SERIAL PRIMARY KEY NOT NULL,
 			name VARCHAR(500),
-			price FLOAT(2),
-			speed VARCHAR(50),
-			memory VARCHAR(10)
+			price FLOAT(5),
+			memory FLOAT(4),
+			speed FLOAT(4)
 		);
 		'''
 		cur.execute(query)
@@ -28,8 +28,8 @@ class SQLOperations:
 		cur.execute('''INSERT INTO gpu_info(
 			name,
 			price,
-			speed,
-			memory
+			memory,
+			speed
 			)
 			VALUES(%s,%s,%s,%s)''', 
 		input_values)
@@ -43,7 +43,7 @@ class SQLOperations:
 			print('\n')
 
 	def clear_table(self):
-		cur.execute("DROP TABLE gpu_info")
+		cur.execute('DROP TABLE gpu_info;')
 		conn.commit()
 
 
@@ -54,25 +54,57 @@ class SQLOperations:
 			print(gpu[2:])
 			print('\n')
 
+	def showSpeedRange(self, lower_bound, higher_bound):
+		cur.execute('SELECT * FROM gpu_info WHERE speed BETWEEN {} AND {};'.format(lower_bound,higher_bound))
+		for gpu in cur.fetchall():
+			print(gpu[1])
+			print(gpu[2:])
+			print('\n')
 
-link = 'https://www.newegg.com/gigabyte-geforce-rtx-3070-gv-n3070eagle-8gd/p/N82E16814932344?Description=rtx 3070&cm_re=rtx_3070-_-14-932-344-_-Product'
-df = pd.DataFrame(columns=('Name','Price','Memory','Speed'))
-add_to_df = pd.DataFrame([list(Scraper().scraperProductInfo(link))], columns=('Name','Price','Memory','Speed'))
-add_to_df1 = pd.DataFrame([list(Scraper().scraperProductInfo(link))], columns=('Name','Price','Memory','Speed'))
-add_to_df2 = pd.DataFrame([list(Scraper().scraperProductInfo(link))], columns=('Name','Price','Memory','Speed'))
-df = df.append(add_to_df,ignore_index=True)
-df = df.append(add_to_df1,ignore_index=True)
-df = df.append(add_to_df2,ignore_index=True)
+	def showMemoryRange(self, lower_bound, higher_bound):
+		cur.execute('SELECT * FROM gpu_info WHERE memory BETWEEN {} AND {};'.format(lower_bound,higher_bound))
+		for gpu in cur.fetchall():
+			print(gpu[1])
+			print(gpu[2:])
+			print('\n')
+
+	def searchGPU(self,name_search):
+		name_search =  "'" + "%" + name_search + "%" + "'"
+		print(name_search)
+		wait = input()
+		cur.execute('SELECT * FROM gpu_info WHERE name ILIKE {};'.format(name_search))
+		for gpu in cur.fetchall():
+			print(gpu[1])
+			print(gpu[2:])
+			print('\n')
+
+
+# link = 'https://www.newegg.com/gigabyte-geforce-rtx-3070-gv-n3070eagle-8gd/p/N82E16814932344?Description=rtx 3070&cm_re=rtx_3070-_-14-932-344-_-Product'
+# df = pd.DataFrame(columns=('Name','Price','Memory','Speed'))
+# add_to_df = pd.DataFrame([list(Scraper().scraperProductInfo(link))], columns=('Name','Price','Memory','Speed'))
+# add_to_df1 = pd.DataFrame([list(Scraper().scraperProductInfo(link))], columns=('Name','Price','Memory','Speed'))
+# add_to_df2 = pd.DataFrame([list(Scraper().scraperProductInfo(link))], columns=('Name','Price','Memory','Speed'))
+# df = df.append(add_to_df,ignore_index=True)
+# df = df.append(add_to_df1,ignore_index=True)
+# df = df.append(add_to_df2,ignore_index=True)
 
 # print(df)
 
 # print(df.iloc[0])
 # SQLOperations().create_table()
-SQLOperations().pass_into_table(df.iloc[0])
-SQLOperations().pass_into_table(df.iloc[1])
-SQLOperations().pass_into_table(df.iloc[2])
+# SQLOperations().pass_into_table(df.iloc[0])
+# SQLOperations().pass_into_table(df.iloc[1])
+# SQLOperations().pass_into_table(df.iloc[2])
+# for row in range(len(df.iloc[:])):
+# 	SQLOperations().pass_into_table(df.iloc[row])
 # SQLOperations().show_table()
 
 # SQLOperations().clear_table()
-SQLOperations().showPriceRange(100,800)
+# SQLOperations().showMemoryRange(0,2000)
 # SQLOperations().show_table()
+
+df = Scraper().scraperUpdate()
+for i in range(len(df.iloc[:])):
+	SQLOperations().pass_into_table(df.iloc[i])
+SQLOperations().show_table()
+print(df)
