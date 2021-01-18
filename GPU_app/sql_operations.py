@@ -39,7 +39,7 @@ class SQLOperations:
 		cur.execute("SELECT * FROM gpu_info")
 		for gpu in cur.fetchall():
 			print(gpu[1])
-			print(gpu[2:])
+			print(str(gpu[2]) + '$' + ', ' + str(gpu[3]) + 'GB' + ', ' + str(gpu[4]) + 'MHz')
 			print('\n')
 
 	def clear_table(self):
@@ -51,21 +51,21 @@ class SQLOperations:
 		cur.execute('SELECT * FROM gpu_info WHERE price BETWEEN {} AND {};'.format(lower_bound,higher_bound))
 		for gpu in cur.fetchall():
 			print(gpu[1])
-			print(gpu[2:])
+			print(str(gpu[2]) + '$' + ', ' + str(gpu[3]) + 'GB' + ', ' + str(gpu[4]) + 'MHz')
 			print('\n')
 
 	def showSpeedRange(self, lower_bound, higher_bound):
 		cur.execute('SELECT * FROM gpu_info WHERE speed BETWEEN {} AND {};'.format(lower_bound,higher_bound))
 		for gpu in cur.fetchall():
 			print(gpu[1])
-			print(gpu[2:])
+			print(str(gpu[2]) + '$' + ', ' + str(gpu[3]) + 'GB' + ', ' + str(gpu[4]) + 'MHz')
 			print('\n')
 
 	def showMemoryRange(self, lower_bound, higher_bound):
 		cur.execute('SELECT * FROM gpu_info WHERE memory BETWEEN {} AND {};'.format(lower_bound,higher_bound))
 		for gpu in cur.fetchall():
 			print(gpu[1])
-			print(gpu[2:])
+			print(str(gpu[2]) + '$' + ', ' + str(gpu[3]) + 'GB' + ', ' + str(gpu[4]) + 'MHz')
 			print('\n')
 
 	def searchGPU(self,name_search):
@@ -75,7 +75,7 @@ class SQLOperations:
 		cur.execute('SELECT * FROM gpu_info WHERE name ILIKE {};'.format(name_search))
 		for gpu in cur.fetchall():
 			print(gpu[1])
-			print(gpu[2:])
+			print(str(gpu[2]) + '$' + ', ' + str(gpu[3]) + 'GB' + ', ' + str(gpu[4]) + 'MHz')
 			print('\n')
 
 
@@ -103,8 +103,8 @@ class SQLOperations:
 # SQLOperations().showMemoryRange(0,2000)
 # SQLOperations().show_table()
 
-df = Scraper().scraperUpdate()
-for i in range(len(df.iloc[:])):
-	SQLOperations().pass_into_table(df.iloc[i])
-SQLOperations().show_table()
-print(df)
+# df = Scraper().scraperUpdate()
+# for i in range(len(df.iloc[:])):
+# 	SQLOperations().pass_into_table(df.iloc[i])
+# SQLOperations().show_table()
+# print(df)
