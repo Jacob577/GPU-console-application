@@ -7,7 +7,13 @@ Project is created with:
 * Pandas: 1.2.2
 * requests: 2.22.0
 * psycopg2: 2.8.6
+* BeautifulSoup: 4.8.2
 
+#Clone this project
+Navigate to desired location and type:
+```
+git clone https://github.com/Jacob577/GPU-console-application.git
+```
 
 #How it works
 
@@ -18,8 +24,10 @@ Secondly a availibility check is ran. I decided to look for specifically RTX 306
 
 You can then update the price and spec list of the GPU:s with option 1 followed up by entering the filters you see fit with the other options.
 
-![Update](/updating.PNG)
+![updating](/updating.PNG)
 
+##Availibility check
+After that we can run the availibility code in order to locate where a graphics card can be bought.
 
-This is a console app suppused to scrape inormation about modern GPU:s on amazon.com and furhtermore store in a SQL-database.
-Information can be called for and there will be filters availible to sort information and compare GPU:s
+![availibility](/availibility.PNG)
+
