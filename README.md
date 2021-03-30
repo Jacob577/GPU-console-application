@@ -1,6 +1,6 @@
 ### GPU-console-application
 
-This console application was created in order to help me get my hands on the a graphics card of the 3000-series. I now got a RTX 3060 so it ended quite well.
+This console application was created in order to help me get my hands on a graphics card of the 3000-series. I now have a RTX 3060 so it ended quite well.
 
 ## Technologies
 Project is created with:
